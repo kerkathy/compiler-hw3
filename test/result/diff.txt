@@ -1,0 +1,350 @@
+3_function
+--- your output:(result/3_function)
++++ answer:(./basic_cases/sample_solutions/3_function)
+@@ -1 +1,24 @@
+-Segmentation fault (core dumped)
++program <line: 4, col: 1> function void
++  function declaration <line: 12, col: 1> func1 boolean (integer, integer, string)
++    declaration <line: 12, col: 7>
++      variable <line: 12, col: 7> x integer
++      variable <line: 12, col: 10> y integer
++    declaration <line: 12, col: 22>
++      variable <line: 12, col: 22> z string
++    compound statement <line: 13, col: 1>
++  function declaration <line: 17, col: 1> func2 boolean (boolean [1][2])
++    declaration <line: 17, col: 7>
++      variable <line: 17, col: 7> a boolean [1][2]
++    compound statement <line: 18, col: 1>
++  function declaration <line: 22, col: 1> func3 string ()
++  function declaration <line: 24, col: 1> func4 void ()
++    compound statement <line: 25, col: 1>
++  function declaration <line: 29, col: 1> func5 void (real, real)
++    declaration <line: 29, col: 7>
++      variable <line: 29, col: 7> b real
++      variable <line: 29, col: 10> c real
++  compound statement <line: 31, col: 1>
++
++|--------------------------------|
++|  There is no syntactic error!  |
++|--------------------------------|
+
+4_compound
+--- your output:(result/4_compound)
++++ answer:(./basic_cases/sample_solutions/4_compound)
+@@ -1,3 +1,11 @@
+-terminate called after throwing an instance of 'std::bad_alloc'
+-  what():  std::bad_alloc
+-Aborted (core dumped)
++program <line: 4, col: 1> compound void
++  compound statement <line: 8, col: 1>
++    declaration <line: 9, col: 3>
++      variable <line: 9, col: 7> a integer
++    declaration <line: 10, col: 3>
++      variable <line: 10, col: 7> b boolean
++    compound statement <line: 11, col: 3>
++
++|--------------------------------|
++|  There is no syntactic error!  |
++|--------------------------------|
+
+5_PrintBinUnConstantInvocation
+--- your output:(result/5_PrintBinUnConstantInvocation)
++++ answer:(./basic_cases/sample_solutions/5_PrintBinUnConstantInvocation)
+@@ -1 +1,88 @@
+-Segmentation fault (core dumped)
++program <line: 4, col: 1> PrintBinUnConstantInvocation void
++  function declaration <line: 8, col: 1> func void ()
++    compound statement <line: 9, col: 1>
++      print statement <line: 10, col: 5>
++        binary operator <line: 10, col: 14> +
++          constant <line: 10, col: 11> 20
++          constant <line: 10, col: 16> 30
++  compound statement <line: 14, col: 1>
++    print statement <line: 15, col: 5>
++      unary operator <line: 15, col: 11> neg
++        constant <line: 15, col: 12> 1
++    print statement <line: 16, col: 5>
++      binary operator <line: 16, col: 13> *
++        constant <line: 16, col: 11> 1
++        constant <line: 16, col: 15> 5
++    print statement <line: 17, col: 5>
++      binary operator <line: 17, col: 14> /
++        constant <line: 17, col: 11> 12
++        constant <line: 17, col: 16> 3
++    print statement <line: 18, col: 5>
++      binary operator <line: 18, col: 14> mod
++        constant <line: 18, col: 11> 17
++        constant <line: 18, col: 18> 9
++    print statement <line: 19, col: 5>
++      binary operator <line: 19, col: 14> +
++        unary operator <line: 19, col: 11> neg
++          constant <line: 19, col: 12> 1
++        constant <line: 19, col: 16> 8
++    print statement <line: 20, col: 5>
++      binary operator <line: 20, col: 14> -
++        constant <line: 20, col: 11> 15
++        constant <line: 20, col: 16> 15
++    print statement <line: 21, col: 5>
++      binary operator <line: 21, col: 14> <
++        constant <line: 21, col: 11> 10
++        constant <line: 21, col: 16> 4
++    print statement <line: 22, col: 5>
++      binary operator <line: 22, col: 14> <=
++        constant <line: 22, col: 11> 10
++        constant <line: 22, col: 17> 4
++    print statement <line: 23, col: 5>
++      binary operator <line: 23, col: 14> =
++        constant <line: 23, col: 11> 10
++        constant <line: 23, col: 16> 4
++    print statement <line: 24, col: 5>
++      binary operator <line: 24, col: 14> >=
++        constant <line: 24, col: 11> 10
++        constant <line: 24, col: 17> 4
++    print statement <line: 25, col: 5>
++      binary operator <line: 25, col: 14> <>
++        constant <line: 25, col: 11> 10
++        constant <line: 25, col: 17> 4
++    print statement <line: 26, col: 5>
++      unary operator <line: 26, col: 11> not
++        constant <line: 26, col: 15> true
++    print statement <line: 27, col: 5>
++      binary operator <line: 27, col: 14> and
++        constant <line: 27, col: 11> 10
++        constant <line: 27, col: 18> 0
++    print statement <line: 28, col: 5>
++      binary operator <line: 28, col: 13> or
++        constant <line: 28, col: 11> 1
++        constant <line: 28, col: 16> 0
++    print statement <line: 29, col: 5>
++      binary operator <line: 29, col: 13> +
++        constant <line: 29, col: 11> 1
++        binary operator <line: 29, col: 17> *
++          constant <line: 29, col: 15> 8
++          constant <line: 29, col: 19> 4
++    print statement <line: 30, col: 5>
++      binary operator <line: 30, col: 19> *
++        binary operator <line: 30, col: 14> +
++          constant <line: 30, col: 12> 1
++          constant <line: 30, col: 16> 8
++        constant <line: 30, col: 21> 4
++    print statement <line: 31, col: 5>
++      binary operator <line: 31, col: 20> *
++        unary operator <line: 31, col: 11> neg
++          binary operator <line: 31, col: 15> +
++            constant <line: 31, col: 13> 1
++            constant <line: 31, col: 17> 8
++        constant <line: 31, col: 22> 4
++    print statement <line: 32, col: 5>
++      function invocation <line: 32, col: 11> func
++
++|--------------------------------|
++|  There is no syntactic error!  |
++|--------------------------------|
+
+6_VarRefAssignRead
+--- your output:(result/6_VarRefAssignRead)
++++ answer:(./basic_cases/sample_solutions/6_VarRefAssignRead)
+@@ -1,3 +1,65 @@
+-terminate called after throwing an instance of 'std::bad_alloc'
+-  what():  std::bad_alloc
+-Aborted (core dumped)
++program <line: 4, col: 1> AssignRead void
++  compound statement <line: 8, col: 1>
++    declaration <line: 9, col: 5>
++      variable <line: 9, col: 9> a integer
++    declaration <line: 10, col: 5>
++      variable <line: 10, col: 9> b boolean
++    declaration <line: 11, col: 5>
++      variable <line: 11, col: 9> c string
++    declaration <line: 12, col: 5>
++      variable <line: 12, col: 9> d real [1][9]
++    assignment statement <line: 14, col: 7>
++      variable reference <line: 14, col: 5> a
++      constant <line: 14, col: 10> 10
++    assignment statement <line: 15, col: 7>
++      variable reference <line: 15, col: 5> b
++      constant <line: 15, col: 10> false
++    assignment statement <line: 16, col: 7>
++      variable reference <line: 16, col: 5> c
++      constant <line: 16, col: 10> Compiler Design
++    assignment statement <line: 17, col: 13>
++      variable reference <line: 17, col: 5> d
++        constant <line: 17, col: 7> 1
++        constant <line: 17, col: 10> 5
++      constant <line: 17, col: 16> 10.090000
++    assignment statement <line: 19, col: 7>
++      variable reference <line: 19, col: 5> a
++      variable reference <line: 19, col: 10> a
++    assignment statement <line: 21, col: 7>
++      variable reference <line: 21, col: 5> a
++      binary operator <line: 21, col: 12> +
++        variable reference <line: 21, col: 10> a
++        constant <line: 21, col: 14> 231
++    assignment statement <line: 22, col: 7>
++      variable reference <line: 22, col: 5> b
++      unary operator <line: 22, col: 10> not
++        variable reference <line: 22, col: 14> b
++    assignment statement <line: 23, col: 7>
++      variable reference <line: 23, col: 5> c
++      binary operator <line: 23, col: 37> +
++        binary operator <line: 23, col: 28> +
++          constant <line: 23, col: 10> Compiler Design
++          constant <line: 23, col: 30> No.1
++        variable reference <line: 23, col: 39> c
++    assignment statement <line: 24, col: 23>
++      variable reference <line: 24, col: 5> d
++        binary operator <line: 24, col: 9> +
++          variable reference <line: 24, col: 7> a
++          constant <line: 24, col: 11> 1
++        binary operator <line: 24, col: 17> +
++          unary operator <line: 24, col: 14> neg
++            constant <line: 24, col: 15> 1
++          constant <line: 24, col: 19> 10
++      constant <line: 24, col: 26> 12.280000
++    read statement <line: 26, col: 5>
++      variable reference <line: 26, col: 10> a
++    read statement <line: 27, col: 5>
++      variable reference <line: 27, col: 10> d
++        binary operator <line: 27, col: 14> *
++          variable reference <line: 27, col: 12> a
++          variable reference <line: 27, col: 16> a
++        constant <line: 27, col: 19> 2
++
++|--------------------------------|
++|  There is no syntactic error!  |
++|--------------------------------|
+
+7_if
+--- your output:(result/7_if)
++++ answer:(./basic_cases/sample_solutions/7_if)
+@@ -1,3 +1,25 @@
+-terminate called after throwing an instance of 'std::bad_alloc'
+-  what():  std::bad_alloc
+-Aborted (core dumped)
++program <line: 4, col: 1> IfControl void
++  compound statement <line: 8, col: 1>
++    declaration <line: 9, col: 3>
++      variable <line: 9, col: 7> debug boolean
++    if statement <line: 12, col: 3>
++      binary operator <line: 12, col: 9> >
++        constant <line: 12, col: 7> 1
++        constant <line: 12, col: 11> 0
++      compound statement <line: 13, col: 3>
++        print statement <line: 14, col: 5>
++          constant <line: 14, col: 11> true
++      compound statement <line: 17, col: 3>
++        print statement <line: 18, col: 5>
++          constant <line: 18, col: 11> false
++    if statement <line: 22, col: 3>
++      binary operator <line: 22, col: 12> =
++        variable reference <line: 22, col: 6> debug
++        constant <line: 22, col: 14> true
++      compound statement <line: 23, col: 3>
++        print statement <line: 24, col: 5>
++          constant <line: 24, col: 11> [LOG]\n
++
++|--------------------------------|
++|  There is no syntactic error!  |
++|--------------------------------|
+
+8_while
+--- your output:(result/8_while)
++++ answer:(./basic_cases/sample_solutions/8_while)
+@@ -1 +1,21 @@
+-Segmentation fault (core dumped)
++program <line: 4, col: 1> WhileControl void
++  compound statement <line: 8, col: 1>
++    declaration <line: 9, col: 3>
++      variable <line: 9, col: 7> counter integer
++        constant <line: 9, col: 16> 0
++    while statement <line: 12, col: 3>
++      binary operator <line: 12, col: 17> <
++        variable reference <line: 12, col: 9> counter
++        constant <line: 12, col: 19> 10
++      compound statement <line: 13, col: 3>
++        print statement <line: 14, col: 5>
++          constant <line: 14, col: 11> Taiwan No.1\n
++        assignment statement <line: 15, col: 13>
++          variable reference <line: 15, col: 5> counter
++          binary operator <line: 15, col: 24> +
++            variable reference <line: 15, col: 16> counter
++            constant <line: 15, col: 26> 1
++
++|--------------------------------|
++|  There is no syntactic error!  |
++|--------------------------------|
+
+9_for
+--- your output:(result/9_for)
++++ answer:(./basic_cases/sample_solutions/9_for)
+@@ -1,3 +1,16 @@
+-terminate called after throwing an instance of 'std::bad_alloc'
+-  what():  std::bad_alloc
+-Aborted (core dumped)
++program <line: 4, col: 1> ForControl void
++  compound statement <line: 8, col: 1>
++    for statement <line: 11, col: 3>
++      declaration <line: 11, col: 7>
++        variable <line: 11, col: 7> idx integer
++      assignment statement <line: 11, col: 11>
++        variable reference <line: 11, col: 7> idx
++        constant <line: 11, col: 14> 0
++      constant <line: 11, col: 19> 10
++      compound statement <line: 12, col: 3>
++        print statement <line: 13, col: 5>
++          constant <line: 13, col: 11> ISA (Ideology State Automaton)\n
++
++|--------------------------------|
++|  There is no syntactic error!  |
++|--------------------------------|
+
+10_return
+--- your output:(result/10_return)
++++ answer:(./basic_cases/sample_solutions/10_return)
+@@ -1,3 +1,8 @@
+-terminate called after throwing an instance of 'std::bad_alloc'
+-  what():  std::bad_alloc
+-Aborted (core dumped)
++program <line: 4, col: 1> ret void
++  compound statement <line: 8, col: 1>
++    return statement <line: 9, col: 3>
++      constant <line: 9, col: 10> 0
++
++|--------------------------------|
++|  There is no syntactic error!  |
++|--------------------------------|
+
+11_call
+--- your output:(result/11_call)
++++ answer:(./basic_cases/sample_solutions/11_call)
+@@ -1,3 +1,26 @@
+-terminate called after throwing an instance of 'std::bad_alloc'
+-  what():  std::bad_alloc
+-Aborted (core dumped)
++program <line: 4, col: 1> call void
++  function declaration <line: 8, col: 1> func integer (integer, integer)
++    declaration <line: 8, col: 6>
++      variable <line: 8, col: 6> a integer
++      variable <line: 8, col: 9> b integer
++    compound statement <line: 9, col: 1>
++      if statement <line: 10, col: 3>
++        binary operator <line: 10, col: 8> <
++          variable reference <line: 10, col: 6> a
++          variable reference <line: 10, col: 10> b
++        compound statement <line: 11, col: 3>
++          print statement <line: 12, col: 5>
++            constant <line: 12, col: 11> 55146
++        compound statement <line: 15, col: 3>
++          print statement <line: 16, col: 5>
++            constant <line: 16, col: 11> 22146
++  compound statement <line: 22, col: 1>
++    function invocation <line: 23, col: 3> func
++      constant <line: 23, col: 8> 20
++      constant <line: 23, col: 12> 30
++    print statement <line: 24, col: 3>
++      function invocation <line: 24, col: 9> func
++
++|--------------------------------|
++|  There is no syntactic error!  |
++|--------------------------------|
+

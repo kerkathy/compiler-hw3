@@ -1,5 +1,6 @@
 %{
 #include "AST/ast.hpp"
+#include "AST/AstDumper.hpp"
 #include "AST/program.hpp"
 #include "AST/decl.hpp"
 #include "AST/variable.hpp"
@@ -19,13 +20,17 @@
 #include "AST/for.hpp"
 #include "AST/return.hpp"
 
+// My def
+#include "AST/IdNode.hpp"
+#include "AST/type.hpp"
+#include "AST/scalar.h"
+	
 #include <cassert>
 #include <errno.h>
 #include <cstdlib>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
-
 #define YYLTYPE yyltype
 
 typedef struct YYLTYPE {
@@ -34,6 +39,13 @@ typedef struct YYLTYPE {
     uint32_t last_line;
     uint32_t last_column;
 } yyltype;
+
+struct LiteralConstantNode {
+	VarType *type;
+	ConstantValueNode *const_node;
+	
+	LiteralConstantNode(VarType *type, ConstantValueNode *const_node) : type(type), const_node(const_node) {};
+};
 
 extern int32_t line_num;  /* declared in scanner.l */
 extern char buffer[];     /* declared in scanner.l */
@@ -48,19 +60,57 @@ extern int yylex_destroy(void);
 %}
 
 %code requires {
+	#include <vector>
+	#include <string>
     class AstNode;
+	class ProgramNode;
+	class DeclNode;
+	class VariableNode;
+	class FunctionNode;
+	class CompoundStatementNode;
+	class ConstantValueNode;
+	class IdNode;
+	class VarType;
+	class LiteralConstantNode;
+	enum class Scalar;
 }
 
     /* For yylval */
 %union {
     /* basic semantic value */
-    char *identifier;
-
+ 	int value;
+	double dval;
+ 	char *identifier, *text;
+	bool bool_type;
     AstNode *node;
+	ProgramNode *program_node;
+	DeclNode *decl_node;
+	LiteralConstantNode *literal_constant;
+	std::vector<int> *arr_dim_list;
+	std::vector<IdNode*> *id_list;
+	std::vector<AstNode*> *node_list;
+	std::vector<DeclNode*> *decl_node_list;
+	std::vector<FunctionNode*> *function_node_list;
+	CompoundStatementNode *compound_statement_node;
+	// ConstantValueNode *literal_constant; 
+	VarType *var_type;
+	Scalar scalar_type;
 };
 
-%type <identifier> ProgramName ID
-
+%type <identifier> ProgramName 
+%type <text> StringAndBoolean
+%type <bool_type> NegOrNot
+%type <var_type> Type ArrType 
+%type <scalar_type> ScalarType 
+%type <node> Statement Simple Condition While For Return FunctionCall
+%type <arr_dim_list> ArrDecl
+%type <id_list> IdList
+%type <node_list> Statements StatementList
+%type <decl_node> Declaration
+%type <decl_node_list> DeclarationList Declarations
+%type <function_node_list> FunctionList
+%type <compound_statement_node> CompoundStatement
+%type <literal_constant> LiteralConstant
     /* Follow the order in scanner.l */
 
     /* Delimiter */
@@ -79,20 +129,21 @@ extern int yylex_destroy(void);
 %right UNARY_MINUS
 
     /* Keyword */
-%token ARRAY BOOLEAN INTEGER REAL STRING
+%token ARRAY 
+%token BOOLEAN INTEGER REAL STRING
 %token END BEGIN_ /* Use BEGIN_ since BEGIN is a keyword in lex */
 %token DO ELSE FOR IF THEN WHILE
 %token DEF OF TO RETURN VAR
-%token FALSE TRUE
+%token <text> FALSE TRUE
 %token PRINT READ
 
     /* Identifier */
-%token ID
+%token <identifier> ID
 
     /* Literal */
-%token INT_LITERAL
-%token REAL_LITERAL
-%token STRING_LITERAL
+%token <value> INT_LITERAL
+%token <dval> REAL_LITERAL
+%token <text> STRING_LITERAL
 
 %%
 
@@ -102,10 +153,13 @@ Program:
     DeclarationList FunctionList CompoundStatement
     /* End of ProgramBody */
     END {
+		//debug
+		//printf("Program\n");
         root = new ProgramNode(@1.first_line, @1.first_column,
-                               $1);
-
-        free($1);
+                               $1, "void", $3, $4, $5);
+        //free($3);
+        //free($4);
+        //free($5);
     }
 ;
 
@@ -114,19 +168,47 @@ ProgramName:
 ;
 
 DeclarationList:
-    Epsilon
-    |
-    Declarations
+    Epsilon {
+		$$ = new std::vector<DeclNode*>;
+		$$->clear();
+		//printf("decl list size %d\n", $$->size());
+		//free($$);
+	}
+	|
+    Declarations {
+		//debug
+		//printf("DeclarationList\n");
+        $$ = $1;
+		//free($$);
+		//free($1);
+	}
 ;
 
 Declarations:
-    Declaration
+    Declaration {
+		//debug
+		//printf("Declarations\n");
+        std::vector<DeclNode*> *decl = new std::vector<DeclNode*>;
+		decl->push_back($1);
+		$$ = decl;
+		//free($$);
+		//free($1);
+	}
     |
-    Declarations Declaration
+    Declarations Declaration {
+		$1->push_back($2);
+		$$ = $1;
+		//free($$);
+		//free($1);
+		//free($2);
+	}
 ;
 
 FunctionList:
-    Epsilon
+    Epsilon {
+ 		$$ = new std::vector<FunctionNode*>;
+        $$->clear();
+	}
     |
     Functions
 ;
@@ -174,9 +256,25 @@ FormalArg:
 ;
 
 IdList:
-    ID
+    ID {
+		std::vector<IdNode*> *id = new std::vector<IdNode*>;
+		IdNode *new_id = new IdNode(@1.first_line, @1.first_column, $1);  
+		id->push_back(new_id);
+		$$ = id;
+		//free($$);
+		//free($1);
+	}
     |
-    IdList COMMA ID
+    IdList COMMA ID {
+		// TODO: record the location of id
+		std::vector<IdNode*> *ids = $1;
+		IdNode *new_id = new IdNode(@3.first_line, @3.first_column, $3);  
+		ids->push_back(new_id);
+		$$ = ids;
+		//free($$);
+		//free($1);
+		//free($3);
+	}
 ;
 
 ReturnType:
@@ -188,59 +286,131 @@ ReturnType:
     /*
        Data Types and Declarations
                                    */
-
 Declaration:
-    VAR IdList COLON Type SEMICOLON
-    |
-    VAR IdList COLON LiteralConstant SEMICOLON
+    VAR IdList COLON Type SEMICOLON {
+		//debug
+		//printf("Declaration\n");
+        $$ = new DeclNode(@1.first_line, @1.first_column,
+                                   $2, $4);
+		//free($$);
+		//free($2);
+		//free($4);
+	}
+	|
+    VAR IdList COLON LiteralConstant SEMICOLON {
+		$$ = new DeclNode(@1.first_line, @1.first_column,
+								   $2, $4->type, $4->const_node);
+		//free($$);
+		//free($2);
+		//free($4);
+	}
 ;
 
 Type:
-    ScalarType
+    ScalarType {
+		//debug
+		//printf("Type\n");
+        VarType *sc_type = new VarType($1);
+		$$ = sc_type;
+	}
     |
-    ArrType
+    ArrType {
+		$$ = $1;
+	}
 ;
 
 ScalarType:
-    INTEGER
+    INTEGER { 
+		//debug
+		//printf("ScalarType\n");
+        $$ = Scalar::INTEGER_SC; }
     |
-    REAL
+    REAL { $$ = Scalar::REAL_SC; }
     |
-    STRING
+    STRING { $$ = Scalar::STRING_SC; }
     |
-    BOOLEAN
+    BOOLEAN { $$ = Scalar::BOOLEAN_SC; }
 ;
 
 ArrType:
-    ArrDecl ScalarType
+    ArrDecl ScalarType {
+		VarType *arr_type = new VarType($2, $1);
+		$$ = arr_type;
+	}
 ;
 
 ArrDecl:
-    ARRAY INT_LITERAL OF
+    ARRAY INT_LITERAL OF {
+		std::vector<int> *arr_dim = new std::vector<int>;
+		arr_dim->push_back($2);
+		$$ = arr_dim;
+	}
     |
-    ArrDecl ARRAY INT_LITERAL OF
+    ArrDecl ARRAY INT_LITERAL OF  {
+//		std::vector<int> *arr_dim = new std::vector<int>;
+		$1->push_back($3);
+		$$ = $1;
+	}
 ;
 
 LiteralConstant:
-    NegOrNot INT_LITERAL
+    NegOrNot INT_LITERAL {
+		// literalconstantnode: type / constantnode
+		VarType *lit_type = new VarType(Scalar::INTEGER_SC);
+		ConstantValueNode *const_node; 
+		//uint32_t val = $1 ? -$2: $2;
+		//const_node = new ConstantValueNode(@2.first_line, @2.first_column, val);
+		if($1) {
+			// negative
+			const_node = new ConstantValueNode(@2.first_line, @2.first_column-1, uint32_t(-$2));
+		}
+		else {
+			const_node = new ConstantValueNode(@2.first_line, @2.first_column, uint32_t($2));
+		}
+
+		LiteralConstantNode *lit_node = new LiteralConstantNode(lit_type, const_node);
+		$$ = lit_node;
+	}
     |
-    NegOrNot REAL_LITERAL
+    NegOrNot REAL_LITERAL {
+		VarType *lit_type = new VarType(Scalar::REAL_SC);
+		ConstantValueNode *const_node; 
+		//double d_val = $1 ? -$2 : $2;
+		//const_node = new ConstantValueNode(@2.first_line, @2.first_column, d_val);
+		if ($1) {
+			const_node = new ConstantValueNode(@2.first_line, @2.first_column - 1, double(-$2));
+		} else {
+			const_node = new ConstantValueNode(@2.first_line, @2.first_column, double($2));
+		}
+		LiteralConstantNode *lit_node = new LiteralConstantNode(lit_type, const_node);
+		$$ = lit_node;
+	}
     |
-    StringAndBoolean
+    StringAndBoolean {
+		VarType *lit_type;
+		//if ($1 == "true" || $1 == "false") 
+		if (!strcmp($1, "true") || !strcmp($1, "false")) 
+			lit_type = new VarType(Scalar::BOOLEAN_SC);
+		else 
+			lit_type = new VarType(Scalar::STRING_SC);
+		ConstantValueNode *const_node = new ConstantValueNode(@1.first_line, @1.first_column, $1);
+		LiteralConstantNode *lit_node = new LiteralConstantNode(lit_type, const_node);
+		$$ = lit_node;
+	}
 ;
 
 NegOrNot:
-    Epsilon
+    Epsilon { $$ = false; }
     |
-    MINUS %prec UNARY_MINUS
+    MINUS %prec UNARY_MINUS { $$ = true; }
 ;
 
 StringAndBoolean:
-    STRING_LITERAL
+    STRING_LITERAL { $$ = $1; }
     |
-    TRUE
+    TRUE { $$ = $1; }  
     |
-    FALSE
+    FALSE { $$ = $1; } 
 ;
 
 IntegerAndReal:
@@ -254,26 +424,59 @@ IntegerAndReal:
                   */
 
 Statement:
-    CompoundStatement
+    CompoundStatement {
+		$$ = $1;
+		//free($$);	
+		//free($1);	
+	}
     |
-    Simple
+    Simple {
+		$$ = $1;
+		//free($$);	
+		//free($1);	
+	}
     |
-    Condition
+    Condition  {
+		$$ = $1;
+		//free($$);	
+		//free($1);	
+	}
     |
-    While
+    While {
+		$$ = $1;
+		//free($$);	
+		//free($1);	
+	}
     |
-    For
+    For {
+		$$ = $1;
+		//free($$);	
+		//free($1);	
+	}
     |
-    Return
+    Return {
+		$$ = $1;
+		//free($$);	
+		//free($1);	
+	}
     |
-    FunctionCall
+    FunctionCall {
+		$$ = $1;
+		//nfree($$);	
+		//free($1);	
+	}
 ;
 
 CompoundStatement:
     BEGIN_
     DeclarationList
     StatementList
-    END
+    END {
+		$$ = new CompoundStatementNode(@1.first_line, @1.first_column,$2, $3);
+		//free($$);
+		//free($2);
+		//free($3);
+	}
 ;
 
 Simple:
@@ -351,15 +554,33 @@ Expressions:
 ;
 
 StatementList:
-    Epsilon
+    Epsilon {
+		$$ = new std::vector<AstNode*>;
+		//free($$);
+	}
     |
-    Statements
+    Statements {
+		$$ = $1;
+		//free($$);
+		//free($1);
+	}
 ;
 
 Statements:
-    Statement
+    Statement {
+		std::vector<AstNode*> *statements = new std::vector<AstNode*>;
+		statements->push_back($1);
+		//free($$);
+		//free($1);
+	}
     |
-    Statements Statement
+    Statements Statement {
+		$1->push_back($2);
+		$$ = $1;
+		//free($$);
+		//free($1);
+		//free($2);
+	}
 ;
 
 Expression:
@@ -440,7 +661,11 @@ int main(int argc, const char *argv[]) {
     yyparse();
 
     if (argc >= 3 && strcmp(argv[2], "--dump-ast") == 0) {
-        root->print();
+        // root->print();
+        AstDumper astdump;
+		//debug
+		//printf("About to accept\n");
+		root->accept(astdump);
     }
 
     printf("\n"

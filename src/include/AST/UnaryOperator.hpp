@@ -2,6 +2,8 @@
 #define __AST_UNARY_OPERATOR_NODE_H
 
 #include "AST/expression.hpp"
+#include "visitor/AstNodeVisitor.hpp"
+#include "AST/AstDumper.hpp" 
 
 class UnaryOperatorNode : public ExpressionNode {
   public:
@@ -10,6 +12,8 @@ class UnaryOperatorNode : public ExpressionNode {
     ~UnaryOperatorNode() = default;
 
     void print() override;
+    void accept(AstNodeVisitor &p_visitor) override { p_visitor.visit(*this); }
+    void visitChildNodes(AstNodeVisitor &p_visitor);
 
   private:
     // TODO: operator, expression

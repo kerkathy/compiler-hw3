@@ -2,6 +2,8 @@
 #define __AST_BINARY_OPERATOR_NODE_H
 
 #include "AST/expression.hpp"
+#include "AST/AstDumper.hpp" 
+#include "visitor/AstNodeVisitor.hpp"
 
 #include <memory>
 
@@ -12,6 +14,8 @@ class BinaryOperatorNode : public ExpressionNode {
     ~BinaryOperatorNode() = default;
 
     void print() override;
+    void accept(AstNodeVisitor &p_visitor) override { p_visitor.visit(*this); }
+    void visitChildNodes(AstNodeVisitor &p_visitor);
 
   private:
     // TODO: operator, expressions

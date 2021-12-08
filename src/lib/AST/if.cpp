@@ -7,6 +7,6 @@ IfNode::IfNode(const uint32_t line, const uint32_t col)
 // TODO: You may use code snippets in AstDumper.cpp
 void IfNode::print() {}
 
-// void IfNode::visitChildNodes(AstNodeVisitor &p_visitor) {
-//     // TODO
-// }
+void IfNode::visitChildNodes(AstNodeVisitor &p_visitor) {
+    // TODO
+}

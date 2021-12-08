@@ -22,6 +22,9 @@ class AstNode {
     AstNode(const uint32_t line, const uint32_t col);
 
     const Location &getLocation() const;
+	//const char *getNameCString() const { return name.c_str() };
+	
+	virtual void accept(AstNodeVisitor &p_visitor) = 0;
 
     virtual void print() = 0;
 };

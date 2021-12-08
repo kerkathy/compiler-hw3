@@ -13,6 +13,6 @@ VariableReferenceNode::VariableReferenceNode(const uint32_t line,
 // TODO: You may use code snippets in AstDumper.cpp
 void VariableReferenceNode::print() {}
 
-// void VariableReferenceNode::visitChildNodes(AstNodeVisitor &p_visitor) {
-//     // TODO
-// }
+void VariableReferenceNode::visitChildNodes(AstNodeVisitor &p_visitor) {
+    // TODO
+}

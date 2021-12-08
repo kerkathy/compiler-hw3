@@ -31,6 +31,7 @@ class AstDumper final : public AstNodeVisitor {
     void visit(WhileNode &p_while) override;
     void visit(ForNode &p_for) override;
     void visit(ReturnNode &p_return) override;
+    // void visit(ExpressionNode &p_expr) override;
 
   private:
     void incrementIndentation();

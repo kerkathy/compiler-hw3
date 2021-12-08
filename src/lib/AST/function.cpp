@@ -7,6 +7,11 @@ FunctionNode::FunctionNode(const uint32_t line, const uint32_t col)
 // TODO: You may use code snippets in AstDumper.cpp
 void FunctionNode::print() {}
 
-// void FunctionNode::visitChildNodes(AstNodeVisitor &p_visitor) {
-//     // TODO
-// }
+void FunctionNode::visitChildNodes(AstNodeVisitor &p_visitor) {
+    // TODO
+	if (decls->size() > 0) {
+		for (auto &decl : *decls) {
+			decl->accept(p_visitor);
+		}
+	}
+}

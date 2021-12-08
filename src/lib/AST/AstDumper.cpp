@@ -20,7 +20,7 @@
 #include <cstdio>
 
 // FIXME: remove this line if you choose to use visitor pattern with this template
-#ifdef I_WANT_TO_USE_VISITOR_PATTERN
+// #ifdef I_WANT_TO_USE_VISITOR_PATTERN
 
 void AstDumper::incrementIndentation() {
     m_indentation += m_indentation_stride;
@@ -42,7 +42,7 @@ void AstDumper::visit(ProgramNode &p_program) {
                 p_program.getNameCString(), "void");
 
     incrementIndentation();
-    p_program.visitChildNodes(*this);
+	p_program.visitChildNodes(*this);
     decrementIndentation();
 }
 
@@ -63,7 +63,7 @@ void AstDumper::visit(VariableNode &p_variable) {
     // TODO: name, type
     std::printf("variable <line: %u, col: %u> %s %s\n",
                 p_variable.getLocation().line, p_variable.getLocation().col,
-                "TODO", "TODO");
+                p_variable.getNameCString(), p_variable.getTypeCString());
 
     incrementIndentation();
     p_variable.visitChildNodes(*this);
@@ -74,10 +74,12 @@ void AstDumper::visit(ConstantValueNode &p_constant_value) {
     outputIndentationSpace(m_indentation);
 
     // TODO: string of constant value
+	// for debug
+	//std::printf("visiting ConstantValueNode.\n");
     std::printf("constant <line: %u, col: %u> %s\n",
                 p_constant_value.getLocation().line,
                 p_constant_value.getLocation().col,
-                "TODO");
+                p_constant_value.getValueCString());
 }
 
 void AstDumper::visit(FunctionNode &p_function) {
@@ -237,5 +239,18 @@ void AstDumper::visit(ReturnNode &p_return) {
     decrementIndentation();
 }
 
+/*
+void AstDumper::visit(ExpressionNode &p_expr) {
+    outputIndentationSpace(m_indentation);
+
+    std::printf("return statement <line: %u, col: %u>\n",
+                p_return.getLocation().line, p_return.getLocation().col);
+
+    incrementIndentation();
+    p_return.visitChildNodes(*this);
+    decrementIndentation();
+}
+*/
+
 // FIXME: remove this line if you choose to use visitor pattern with this template
-#endif
+// #endif

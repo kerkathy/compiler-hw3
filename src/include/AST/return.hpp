@@ -2,6 +2,8 @@
 #define __AST_RETURN_NODE_H
 
 #include "AST/ast.hpp"
+#include "visitor/AstNodeVisitor.hpp"
+#include "AST/AstDumper.hpp" 
 
 class ReturnNode : public AstNode {
   public:
@@ -10,6 +12,8 @@ class ReturnNode : public AstNode {
     ~ReturnNode() = default;
 
     void print() override;
+    void accept(AstNodeVisitor &p_visitor) override { p_visitor.visit(*this); }
+    void visitChildNodes(AstNodeVisitor &p_visitor);
 
   private:
     // TODO: expression
