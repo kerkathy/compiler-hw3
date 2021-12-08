@@ -29,8 +29,10 @@ class DeclNode : public AstNode {
    			/* TODO: identifiers, constant */
 
     ~DeclNode() = default;
-
-    void print() override;
+	
+	std::vector<std::string> getAllTypeCString() const;
+    
+	void print() override;
 	void accept(AstNodeVisitor &p_visitor) override { p_visitor.visit(*this); }
 	void visitChildNodes(AstNodeVisitor &p_visitor);
 

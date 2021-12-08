@@ -86,9 +86,17 @@ void AstDumper::visit(FunctionNode &p_function) {
     outputIndentationSpace(m_indentation);
 
     // TODO: name, prototype string
-    std::printf("function declaration <line: %u, col: %u> %s %s\n",
+    std::printf("function declaration <line: %u, col: %u> %s %s",
                 p_function.getLocation().line, p_function.getLocation().col,
-                "TODO", "TODO");
+                p_function.getNameCString(), p_function.getTypeCString());
+	std::printf(" (");
+	bool first = true;
+	for (auto &proto : p_function.getProtoCString()) {
+		if (!first) std::printf(", ");
+		std::printf("%s", proto.c_str());
+		first = false;
+	}
+	std::printf(")\n");
 
     incrementIndentation();
     p_function.visitChildNodes(*this);

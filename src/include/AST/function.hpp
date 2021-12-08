@@ -6,22 +6,36 @@
 #include "AST/CompoundStatement.hpp"
 #include "visitor/AstNodeVisitor.hpp"
 #include "AST/AstDumper.hpp" 
+#include "AST/scalar.h"
 
 class FunctionNode : public AstNode {
   public:
-    FunctionNode(const uint32_t line, const uint32_t col
+    FunctionNode(const uint32_t line, const uint32_t col,
+				 const char *name,
+				 std::vector<DeclNode*> *decls,
+				 Scalar return_type,
+				 CompoundStatementNode *compound
                  /* TODO: name, declarations, return type,
                   *       compound statement (optional) */);
-    ~FunctionNode() = default;
+    FunctionNode(const uint32_t line, const uint32_t col,
+				 const char *name,
+				 //std::string name,
+				 std::vector<DeclNode*> *decls,
+				 Scalar return_type);
+     ~FunctionNode() = default;
 
-    void print() override;
+    const char *getNameCString() const;
+    const char *getTypeCString() const;
+	const std::vector<std::string> getProtoCString() const;
+    
+	void print() override;
 	void accept(AstNodeVisitor &p_visitor) override { p_visitor.visit(*this); }
     void visitChildNodes(AstNodeVisitor &p_visitor);
 
   private:
 	std::string name;
 	std::vector<DeclNode*> *decls;
-	std::string type;
+	Scalar return_type;
 	CompoundStatementNode *compound;
 	// TODO: name, declarations, return type, compound statement
 };

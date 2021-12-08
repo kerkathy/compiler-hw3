@@ -1,5 +1,4 @@
 #include "AST/decl.hpp"
-#include <string> // for debug
 
 // TODO: variable declaration
 DeclNode::DeclNode(const uint32_t line, const uint32_t col, 
@@ -29,6 +28,19 @@ DeclNode::DeclNode(const uint32_t line, const uint32_t col,
 		}	
 	}
 
+std::vector<std::string> DeclNode::getAllTypeCString() const {
+	std::vector<std::string> all_type;
+	//debug
+	//std::printf("Reading from variables in decl.cpp: \n");
+	for (auto &vari : variables) {
+	//	std::printf("%s, ", vari->getTypeCString());
+		all_type.push_back(vari->getTypeCString());
+	}
+	//std::printf("In decl.cpp: ");
+	//for (auto &t : all_type) std::printf("%s, ", t);
+	return all_type;
+}
+
 // TODO: You may use code snippets in AstDumper.cpp
 void DeclNode::print() {}
 
@@ -38,7 +50,7 @@ void DeclNode::visitChildNodes(AstNodeVisitor &p_visitor) {
 		int cnt = 0;
 		for (auto &vari : variables) {
 			//for debug
-			//std::printf("var cnt: %d\n", cnt);
+			std::printf("var cnt: %d\n", cnt++);
 			vari->accept(p_visitor);	
 		}
 	}

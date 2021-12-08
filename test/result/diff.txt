@@ -1,40 +1,8 @@
-3_function
---- your output:(result/3_function)
-+++ answer:(./basic_cases/sample_solutions/3_function)
-@@ -1 +1,24 @@
--Segmentation fault (core dumped)
-+program <line: 4, col: 1> function void
-+  function declaration <line: 12, col: 1> func1 boolean (integer, integer, string)
-+    declaration <line: 12, col: 7>
-+      variable <line: 12, col: 7> x integer
-+      variable <line: 12, col: 10> y integer
-+    declaration <line: 12, col: 22>
-+      variable <line: 12, col: 22> z string
-+    compound statement <line: 13, col: 1>
-+  function declaration <line: 17, col: 1> func2 boolean (boolean [1][2])
-+    declaration <line: 17, col: 7>
-+      variable <line: 17, col: 7> a boolean [1][2]
-+    compound statement <line: 18, col: 1>
-+  function declaration <line: 22, col: 1> func3 string ()
-+  function declaration <line: 24, col: 1> func4 void ()
-+    compound statement <line: 25, col: 1>
-+  function declaration <line: 29, col: 1> func5 void (real, real)
-+    declaration <line: 29, col: 7>
-+      variable <line: 29, col: 7> b real
-+      variable <line: 29, col: 10> c real
-+  compound statement <line: 31, col: 1>
-+
-+|--------------------------------|
-+|  There is no syntactic error!  |
-+|--------------------------------|
-
 4_compound
 --- your output:(result/4_compound)
 +++ answer:(./basic_cases/sample_solutions/4_compound)
-@@ -1,3 +1,11 @@
--terminate called after throwing an instance of 'std::bad_alloc'
--  what():  std::bad_alloc
--Aborted (core dumped)
+@@ -1 +1,11 @@
+-Segmentation fault (core dumped)
 +program <line: 4, col: 1> compound void
 +  compound statement <line: 8, col: 1>
 +    declaration <line: 9, col: 3>
@@ -277,10 +245,8 @@
 9_for
 --- your output:(result/9_for)
 +++ answer:(./basic_cases/sample_solutions/9_for)
-@@ -1,3 +1,16 @@
--terminate called after throwing an instance of 'std::bad_alloc'
--  what():  std::bad_alloc
--Aborted (core dumped)
+@@ -1 +1,16 @@
+-Segmentation fault (core dumped)
 +program <line: 4, col: 1> ForControl void
 +  compound statement <line: 8, col: 1>
 +    for statement <line: 11, col: 3>
@@ -301,10 +267,8 @@
 10_return
 --- your output:(result/10_return)
 +++ answer:(./basic_cases/sample_solutions/10_return)
-@@ -1,3 +1,8 @@
--terminate called after throwing an instance of 'std::bad_alloc'
--  what():  std::bad_alloc
--Aborted (core dumped)
+@@ -1 +1,8 @@
+-Segmentation fault (core dumped)
 +program <line: 4, col: 1> ret void
 +  compound statement <line: 8, col: 1>
 +    return statement <line: 9, col: 3>

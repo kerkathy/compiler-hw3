@@ -72,6 +72,7 @@ extern int yylex_destroy(void);
 	class IdNode;
 	class VarType;
 	class LiteralConstantNode;
+	class FunctionNode;
 	enum class Scalar;
 }
 
@@ -86,32 +87,34 @@ extern int yylex_destroy(void);
 	ProgramNode *program_node;
 	DeclNode *decl_node;
 	LiteralConstantNode *literal_constant;
+	CompoundStatementNode *compound_statement_node;
+	FunctionNode *function_node;
 	std::vector<int> *arr_dim_list;
 	std::vector<IdNode*> *id_list;
 	std::vector<AstNode*> *node_list;
 	std::vector<DeclNode*> *decl_node_list;
 	std::vector<FunctionNode*> *function_node_list;
-	CompoundStatementNode *compound_statement_node;
 	// ConstantValueNode *literal_constant; 
 	VarType *var_type;
 	Scalar scalar_type;
 };
 
-%type <identifier> ProgramName 
+%type <identifier> ProgramName FunctionName 
 %type <text> StringAndBoolean
 %type <bool_type> NegOrNot
 %type <var_type> Type ArrType 
-%type <scalar_type> ScalarType 
+%type <scalar_type> ScalarType ReturnType
 %type <node> Statement Simple Condition While For Return FunctionCall
+%type <literal_constant> LiteralConstant
+%type <function_node> Function FunctionDeclaration FunctionDefinition
 %type <arr_dim_list> ArrDecl
 %type <id_list> IdList
 %type <node_list> Statements StatementList
-%type <decl_node> Declaration
-%type <decl_node_list> DeclarationList Declarations
-%type <function_node_list> FunctionList
+%type <decl_node> Declaration FormalArg
+%type <decl_node_list> DeclarationList Declarations FormalArgs FormalArgList
+%type <function_node_list> FunctionList Functions
 %type <compound_statement_node> CompoundStatement
-%type <literal_constant> LiteralConstant
-    /* Follow the order in scanner.l */
+/* Follow the order in scanner.l */
 
     /* Delimiter */
 %token COMMA SEMICOLON COLON
@@ -210,49 +213,79 @@ FunctionList:
         $$->clear();
 	}
     |
-    Functions
+    Functions { $$ = $1; }
 ;
 
 Functions:
-    Function
+    Function {
+		std::vector<FunctionNode*> *function = new std::vector<FunctionNode*>;
+		function->push_back($1);
+		$$ = function;
+	}
     |
-    Functions Function
+    Functions Function {
+		std::vector<FunctionNode*> *function = $1;
+		function->push_back($2);
+		$$ = $1;
+	
+	}
 ;
 
 Function:
-    FunctionDeclaration
+    FunctionDeclaration { $$ = $1; }
     |
-    FunctionDefinition
+    FunctionDefinition { $$ = $1; }
 ;
 
 FunctionDeclaration:
-    FunctionName L_PARENTHESIS FormalArgList R_PARENTHESIS ReturnType SEMICOLON
+    FunctionName L_PARENTHESIS FormalArgList R_PARENTHESIS ReturnType SEMICOLON {
+		FunctionNode *func_decl = new FunctionNode(@1.first_line, @1.first_column, $1, $3, $5);	
+		$$ = func_decl;
+	}
 ;
 
 FunctionDefinition:
     FunctionName L_PARENTHESIS FormalArgList R_PARENTHESIS ReturnType
     CompoundStatement
-    END
+    END {
+		FunctionNode *func_def = new FunctionNode(@1.first_line, @1.first_column, $1, $3, $5, $6);	
+		$$ = func_def;
+	}
 ;
 
 FunctionName:
-    ID
+    ID { $$ = $1; }
 ;
 
 FormalArgList:
-    Epsilon
+    Epsilon {
+		std::vector<DeclNode*> *formal_args = new std::vector<DeclNode*>;
+		$$ = formal_args;
+	}
     |
-    FormalArgs
+    FormalArgs {
+		$$ = $1;	
+	}
 ;
 
 FormalArgs:
-    FormalArg
+    FormalArg {
+		std::vector<DeclNode*> *formal_args = new std::vector<DeclNode*>;
+		formal_args->push_back($1);
+		$$ = formal_args;
+	}
     |
-    FormalArgs SEMICOLON FormalArg
+    FormalArgs SEMICOLON FormalArg {
+		std::vector<DeclNode*> *formal_args = $1;
+		formal_args->push_back($3);
+		$$ = formal_args;
+	}
 ;
 
 FormalArg:
-    IdList COLON Type
+    IdList COLON Type {
+        $$ = new DeclNode(@1.first_line, @1.first_column, $1, $3);
+	}
 ;
 
 IdList:
@@ -278,9 +311,9 @@ IdList:
 ;
 
 ReturnType:
-    COLON ScalarType
+    COLON ScalarType { $$ = $2; }
     |
-    Epsilon
+    Epsilon { $$ = Scalar::VOID_SC; }
 ;
 
     /*
