@@ -13,7 +13,8 @@ class CompoundStatementNode : public AstNode {
   public:
     CompoundStatementNode(const uint32_t line, const uint32_t col,
 						  std::vector<DeclNode*> *decls, 
-						  std::vector<AstNode*> *statements); 
+						  std::vector<CompoundStatementNode*> *statements); 
+						  //std::vector<AstNode*> *statements); 
 
                           /* TODO: declarations, statements );*/
     ~CompoundStatementNode() = default;
@@ -24,7 +25,7 @@ class CompoundStatementNode : public AstNode {
 
   private:
 	std::vector<DeclNode*> *decls;
-	std::vector<AstNode*> *statements;
+	std::vector<CompoundStatementNode*> *statements;
 	// TODO: declarations, statements
 };
 

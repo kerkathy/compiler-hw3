@@ -47,10 +47,10 @@ void DeclNode::print() {}
 void DeclNode::visitChildNodes(AstNodeVisitor &p_visitor) {
 	if (!variables.empty()) {
 		// for dedug
-		int cnt = 0;
+		//int cnt = 0;
 		for (auto &vari : variables) {
 			//for debug
-			std::printf("var cnt: %d\n", cnt++);
+			//std::printf("var cnt: %d\n", cnt);
 			vari->accept(p_visitor);	
 		}
 	}

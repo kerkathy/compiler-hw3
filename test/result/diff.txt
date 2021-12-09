@@ -1,20 +1,3 @@
-4_compound
---- your output:(result/4_compound)
-+++ answer:(./basic_cases/sample_solutions/4_compound)
-@@ -1 +1,11 @@
--Segmentation fault (core dumped)
-+program <line: 4, col: 1> compound void
-+  compound statement <line: 8, col: 1>
-+    declaration <line: 9, col: 3>
-+      variable <line: 9, col: 7> a integer
-+    declaration <line: 10, col: 3>
-+      variable <line: 10, col: 7> b boolean
-+    compound statement <line: 11, col: 3>
-+
-+|--------------------------------|
-+|  There is no syntactic error!  |
-+|--------------------------------|
-
 5_PrintBinUnConstantInvocation
 --- your output:(result/5_PrintBinUnConstantInvocation)
 +++ answer:(./basic_cases/sample_solutions/5_PrintBinUnConstantInvocation)
@@ -112,10 +95,8 @@
 6_VarRefAssignRead
 --- your output:(result/6_VarRefAssignRead)
 +++ answer:(./basic_cases/sample_solutions/6_VarRefAssignRead)
-@@ -1,3 +1,65 @@
--terminate called after throwing an instance of 'std::bad_alloc'
--  what():  std::bad_alloc
--Aborted (core dumped)
+@@ -1 +1,65 @@
+-Segmentation fault (core dumped)
 +program <line: 4, col: 1> AssignRead void
 +  compound statement <line: 8, col: 1>
 +    declaration <line: 9, col: 5>
@@ -185,10 +166,8 @@
 7_if
 --- your output:(result/7_if)
 +++ answer:(./basic_cases/sample_solutions/7_if)
-@@ -1,3 +1,25 @@
--terminate called after throwing an instance of 'std::bad_alloc'
--  what():  std::bad_alloc
--Aborted (core dumped)
+@@ -1 +1,25 @@
+-Segmentation fault (core dumped)
 +program <line: 4, col: 1> IfControl void
 +  compound statement <line: 8, col: 1>
 +    declaration <line: 9, col: 3>
@@ -281,10 +260,8 @@
 11_call
 --- your output:(result/11_call)
 +++ answer:(./basic_cases/sample_solutions/11_call)
-@@ -1,3 +1,26 @@
--terminate called after throwing an instance of 'std::bad_alloc'
--  what():  std::bad_alloc
--Aborted (core dumped)
+@@ -1 +1,26 @@
+-Segmentation fault (core dumped)
 +program <line: 4, col: 1> call void
 +  function declaration <line: 8, col: 1> func integer (integer, integer)
 +    declaration <line: 8, col: 6>

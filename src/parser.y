@@ -87,13 +87,14 @@ extern int yylex_destroy(void);
 	ProgramNode *program_node;
 	DeclNode *decl_node;
 	LiteralConstantNode *literal_constant;
-	CompoundStatementNode *compound_statement_node;
+	CompoundStatementNode *comp_node;
 	FunctionNode *function_node;
 	std::vector<int> *arr_dim_list;
 	std::vector<IdNode*> *id_list;
 	std::vector<AstNode*> *node_list;
 	std::vector<DeclNode*> *decl_node_list;
-	std::vector<FunctionNode*> *function_node_list;
+	std::vector<CompoundStatementNode*> *comp_node_list;
+	std::vector<FunctionNode*> *func_node_list;
 	// ConstantValueNode *literal_constant; 
 	VarType *var_type;
 	Scalar scalar_type;
@@ -104,16 +105,16 @@ extern int yylex_destroy(void);
 %type <bool_type> NegOrNot
 %type <var_type> Type ArrType 
 %type <scalar_type> ScalarType ReturnType
-%type <node> Statement Simple Condition While For Return FunctionCall
 %type <literal_constant> LiteralConstant
 %type <function_node> Function FunctionDeclaration FunctionDefinition
 %type <arr_dim_list> ArrDecl
 %type <id_list> IdList
-%type <node_list> Statements StatementList
 %type <decl_node> Declaration FormalArg
+%type <comp_node> Simple Condition While For Return FunctionCall
+%type <comp_node> Statement CompoundStatement 
 %type <decl_node_list> DeclarationList Declarations FormalArgs FormalArgList
-%type <function_node_list> FunctionList Functions
-%type <compound_statement_node> CompoundStatement
+%type <comp_node_list> Statements StatementList
+%type <func_node_list> FunctionList Functions
 /* Follow the order in scanner.l */
 
     /* Delimiter */
@@ -160,9 +161,6 @@ Program:
 		//printf("Program\n");
         root = new ProgramNode(@1.first_line, @1.first_column,
                                $1, "void", $3, $4, $5);
-        //free($3);
-        //free($4);
-        //free($5);
     }
 ;
 
@@ -175,15 +173,12 @@ DeclarationList:
 		$$ = new std::vector<DeclNode*>;
 		$$->clear();
 		//printf("decl list size %d\n", $$->size());
-		//free($$);
 	}
 	|
     Declarations {
 		//debug
 		//printf("DeclarationList\n");
         $$ = $1;
-		//free($$);
-		//free($1);
 	}
 ;
 
@@ -194,16 +189,11 @@ Declarations:
         std::vector<DeclNode*> *decl = new std::vector<DeclNode*>;
 		decl->push_back($1);
 		$$ = decl;
-		//free($$);
-		//free($1);
 	}
     |
     Declarations Declaration {
 		$1->push_back($2);
 		$$ = $1;
-		//free($$);
-		//free($1);
-		//free($2);
 	}
 ;
 
@@ -294,8 +284,6 @@ IdList:
 		IdNode *new_id = new IdNode(@1.first_line, @1.first_column, $1);  
 		id->push_back(new_id);
 		$$ = id;
-		//free($$);
-		//free($1);
 	}
     |
     IdList COMMA ID {
@@ -304,9 +292,6 @@ IdList:
 		IdNode *new_id = new IdNode(@3.first_line, @3.first_column, $3);  
 		ids->push_back(new_id);
 		$$ = ids;
-		//free($$);
-		//free($1);
-		//free($3);
 	}
 ;
 
@@ -325,17 +310,11 @@ Declaration:
 		//printf("Declaration\n");
         $$ = new DeclNode(@1.first_line, @1.first_column,
                                    $2, $4);
-		//free($$);
-		//free($2);
-		//free($4);
 	}
 	|
     VAR IdList COLON LiteralConstant SEMICOLON {
 		$$ = new DeclNode(@1.first_line, @1.first_column,
 								   $2, $4->type, $4->const_node);
-		//free($$);
-		//free($2);
-		//free($4);
 	}
 ;
 
@@ -458,45 +437,32 @@ IntegerAndReal:
 
 Statement:
     CompoundStatement {
+		//printf("find Statement!\n");
 		$$ = $1;
-		//free($$);	
-		//free($1);	
 	}
     |
     Simple {
 		$$ = $1;
-		//free($$);	
-		//free($1);	
 	}
     |
     Condition  {
 		$$ = $1;
-		//free($$);	
-		//free($1);	
 	}
     |
     While {
 		$$ = $1;
-		//free($$);	
-		//free($1);	
 	}
     |
     For {
 		$$ = $1;
-		//free($$);	
-		//free($1);	
 	}
     |
     Return {
 		$$ = $1;
-		//free($$);	
-		//free($1);	
 	}
     |
     FunctionCall {
 		$$ = $1;
-		//nfree($$);	
-		//free($1);	
 	}
 ;
 
@@ -505,10 +471,9 @@ CompoundStatement:
     DeclarationList
     StatementList
     END {
-		$$ = new CompoundStatementNode(@1.first_line, @1.first_column,$2, $3);
-		//free($$);
-		//free($2);
-		//free($3);
+		// for debug
+		//printf("found compoundstatement! \n");
+		$$ = new CompoundStatementNode(@1.first_line, @1.first_column, $2, $3);
 	}
 ;
 
@@ -588,31 +553,28 @@ Expressions:
 
 StatementList:
     Epsilon {
-		$$ = new std::vector<AstNode*>;
-		//free($$);
+		// for debug
+		//printf("found epsilon statementlist\n");
+		$$ = new std::vector<CompoundStatementNode*>;
+        $$->clear();
 	}
     |
     Statements {
 		$$ = $1;
-		//free($$);
-		//free($1);
 	}
 ;
 
 Statements:
     Statement {
-		std::vector<AstNode*> *statements = new std::vector<AstNode*>;
+		std::vector<CompoundStatementNode*> *statements = new std::vector<CompoundStatementNode*>;
 		statements->push_back($1);
-		//free($$);
-		//free($1);
+		$$ = statements;
 	}
     |
     Statements Statement {
-		$1->push_back($2);
+		std::vector<CompoundStatementNode*> *statements = $1;
+		statements->push_back($2);
 		$$ = $1;
-		//free($$);
-		//free($1);
-		//free($2);
 	}
 ;
 
