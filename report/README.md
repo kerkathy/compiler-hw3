@@ -112,7 +112,7 @@ enum class Operator {
 };
 ```
 In this way, I can easily assign its given value from `parser.y` :
-```lex
+```yacc
 // in parser.y
 Expression:
     L_PARENTHESIS Expression R_PARENTHESIS { $$ = $2; } 
