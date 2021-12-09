@@ -4,10 +4,14 @@
 #include "AST/ast.hpp"
 #include "visitor/AstNodeVisitor.hpp"                                 
 #include "AST/AstDumper.hpp"  
+#include "AST/expression.hpp"  
+#include "AST/CompoundStatement.hpp"  
 
 class WhileNode : public AstNode {
   public:
-    WhileNode(const uint32_t line, const uint32_t col
+    WhileNode(const uint32_t line, const uint32_t col,
+			  ExpressionNode *cond,
+			  CompoundStatementNode *body
               /* TODO: expression, compound statement */);
     ~WhileNode() = default;
 
@@ -17,6 +21,8 @@ class WhileNode : public AstNode {
 
   private:
     // TODO: expression, compound statement
+	ExpressionNode *cond;
+	CompoundStatementNode *body;
 };
 
 #endif

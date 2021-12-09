@@ -4,11 +4,19 @@
 #include "AST/ast.hpp"
 #include "visitor/AstNodeVisitor.hpp"                                 
 #include "AST/AstDumper.hpp" 
+#include "AST/decl.hpp" 
+#include "AST/assignment.hpp" 
+#include "AST/ConstantValue.hpp" 
+#include "AST/CompoundStatement.hpp" 
 
 class ForNode : public AstNode {
   public:
-    ForNode(const uint32_t line, const uint32_t col
-            /* TODO: declaration, assignment, expression,
+    ForNode(const uint32_t line, const uint32_t col,
+			DeclNode *loop_var,
+			AssignmentNode *init_stmt,
+			ConstantValueNode *cond,
+			CompoundStatementNode *body
+			/* TODO: declaration, assignment, expression,
              *       compound statement */);
     ~ForNode() = default;
 
@@ -18,6 +26,10 @@ class ForNode : public AstNode {
 
   private:
     // TODO: declaration, assignment, expression, compound statement
+	DeclNode *loop_var;
+	AssignmentNode *init_stmt;
+	ConstantValueNode *cond;
+	CompoundStatementNode *body;	
 };
 
 #endif

@@ -540,13 +540,28 @@ ElseOrNot:
 While:
     WHILE Expression DO
     CompoundStatement
-    END DO
+    END DO {
+		$$ = new WhileNode(@1.first_line, @1.first_column, $2, $4);
+	}
 ;
 
 For:
     FOR ID ASSIGN INT_LITERAL TO INT_LITERAL DO
     CompoundStatement
-    END DO
+    END DO {
+		std::vector<IdNode*> *ids = new std::vector<IdNode*>; 
+		IdNode *id = new IdNode(@2.first_line, @2.first_column, $2);
+		ids->push_back(id);
+		std::vector<int> *array_dim = new std::vector<int>;
+		VarType *id_type = new VarType(Scalar::INTEGER_SC, array_dim);
+		DeclNode *loop_var = new DeclNode(@2.first_line, @2.first_column, ids, id_type);
+		VariableReferenceNode *var_ref = new VariableReferenceNode(@2.first_line, @2.first_column, $2);
+		ExpressionNode *init_val = new ConstantValueNode(@4.first_line, @4.first_column, uint32_t($4));
+		AssignmentNode *init_stmt = new AssignmentNode(@3.first_line, @3.first_column, var_ref, init_val);
+		ConstantValueNode *cond = new ConstantValueNode(@6.first_line, @6.first_column, uint32_t($6));
+
+		$$ = new ForNode(@1.first_line, @1.first_column, loop_var, init_stmt, cond, $8);
+	}
 ;
 
 Return:
