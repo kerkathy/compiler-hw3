@@ -73,9 +73,6 @@ void AstDumper::visit(VariableNode &p_variable) {
 void AstDumper::visit(ConstantValueNode &p_constant_value) {
     outputIndentationSpace(m_indentation);
 
-    // TODO: string of constant value
-	// for debug
-	//std::printf("visiting ConstantValueNode.\n");
     std::printf("constant <line: %u, col: %u> %s\n",
                 p_constant_value.getLocation().line,
                 p_constant_value.getLocation().col,
@@ -85,7 +82,6 @@ void AstDumper::visit(ConstantValueNode &p_constant_value) {
 void AstDumper::visit(FunctionNode &p_function) {
     outputIndentationSpace(m_indentation);
 
-    // TODO: name, prototype string
     std::printf("function declaration <line: %u, col: %u> %s %s",
                 p_function.getLocation().line, p_function.getLocation().col,
                 p_function.getNameCString(), p_function.getTypeCString());

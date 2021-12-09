@@ -47,9 +47,6 @@ const char *VariableNode::getTypeCString() const {
 void VariableNode::print() {}
 
 void VariableNode::visitChildNodes(AstNodeVisitor &p_visitor) {
-    // TODO
-	// for debug
-	//std::printf("about to accept constant node.\n");
 	if (constant)
 		constant->accept(p_visitor);
 }

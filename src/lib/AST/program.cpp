@@ -11,9 +11,6 @@ ProgramNode::ProgramNode(const uint32_t line, const uint32_t col,
 		this->name = p_name;
 		this->type = p_type;
 		this->decls = p_decls;
-		//debug
-//		std::printf("In program constructor, decls size %d", decls->size());
-//		std::printf(", decls empty? %d\n", decls->empty());
 		this->functions = p_functions;
 		this->compound = p_compound;
 	}
@@ -37,7 +34,6 @@ void ProgramNode::print() {
 }
 
 void ProgramNode::visitChildNodes(AstNodeVisitor &p_visitor) { // visitor pattern version
-     /* TODO*/
 	if (!decls->empty()) {	
 		for (auto &decl : *decls) {
 	 		decl->accept(p_visitor);

@@ -1,8 +1,6 @@
 #include "AST/ConstantValue.hpp"
 #include <string>
 #include <sstream>
-#include <cstdio> // for debug
-#include <iostream> // for debug
 
 ConstantValueNode::ConstantValueNode(const uint32_t line, const uint32_t col, const uint32_t const_val_int)
     : ExpressionNode{line, col} {
@@ -21,12 +19,7 @@ ConstantValueNode::ConstantValueNode(const uint32_t line, const uint32_t col, co
 	}
 
 const char *ConstantValueNode::getValueCString() const { 
-	// for debug
-	//std::printf("getValueCString from ConstantValueNode.cpp, type %d\n", type);
 	if (type == 1) {
-		//std::stringstream ss;
-		//ss << const_val_int;
-		//std::string intval = ss.str();
 		std::string intval = std::to_string(const_val_int);
 		char const *int_char = intval.c_str();
 		return int_char;
