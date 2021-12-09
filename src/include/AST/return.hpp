@@ -4,11 +4,13 @@
 #include "AST/ast.hpp"
 #include "visitor/AstNodeVisitor.hpp"
 #include "AST/AstDumper.hpp" 
+#include "AST/expression.hpp" 
 
 class ReturnNode : public AstNode {
   public:
-    ReturnNode(const uint32_t line, const uint32_t col
-               /* TODO: expression */);
+    ReturnNode(const uint32_t line, const uint32_t col,
+               ExpressionNode *expr
+			   /* TODO: expression */);
     ~ReturnNode() = default;
 
     void print() override;
@@ -17,6 +19,7 @@ class ReturnNode : public AstNode {
 
   private:
     // TODO: expression
+	ExpressionNode *expr;
 };
 
 #endif
