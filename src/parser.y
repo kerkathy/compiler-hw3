@@ -119,7 +119,7 @@ extern int yylex_destroy(void);
 %type <decl_node> Declaration FormalArg
 %type <node> Simple Condition While For Return FunctionCall
 %type <node> Statement  
-%type <comp_node> CompoundStatement 
+%type <comp_node> CompoundStatement ElseOrNot 
 %type <func_node> Function FunctionDeclaration FunctionDefinition
 %type <expr_node> Expression
 %type <func_inv_node> FunctionInvocation
@@ -525,14 +525,16 @@ Condition:
     IF Expression THEN
     CompoundStatement
     ElseOrNot
-    END IF
+    END IF {
+		$$ = new IfNode(@1.first_line, @1.first_column, $2, $4, $5);
+	}
 ;
 
 ElseOrNot:
     ELSE
-    CompoundStatement
+    CompoundStatement { $$ = $2; }
     |
-    Epsilon
+    Epsilon { $$ = NULL; }
 ;
 
 While:

@@ -3,12 +3,16 @@
 
 #include "AST/ast.hpp"
 #include "AST/AstDumper.hpp"  
+#include "AST/expression.hpp"  
+#include "AST/CompoundStatement.hpp"  
 #include "visitor/AstNodeVisitor.hpp"                                 
 
 
 class IfNode : public AstNode {
   public:
-    IfNode(const uint32_t line, const uint32_t col
+    IfNode(const uint32_t line, const uint32_t col,
+		   ExpressionNode *cond, 
+		   CompoundStatementNode *body, CompoundStatementNode *body_ofelse
            /* TODO: expression, compound statement, compound statement */);
     ~IfNode() = default;
 
@@ -17,6 +21,8 @@ class IfNode : public AstNode {
     void visitChildNodes(AstNodeVisitor &p_visitor);
 
   private:
+	ExpressionNode *cond;
+	CompoundStatementNode *body, *body_ofelse = nullptr;
     // TODO: expression, compound statement, compound statement
 };
 
