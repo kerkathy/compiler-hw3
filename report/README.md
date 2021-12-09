@@ -13,10 +13,10 @@
 
 ### Visitor Pattern
 First, I implemented visitor pattern according to the provided `hw3.pdf` and `tutorial`. In short, replacing
-* StoreVisitorBase with AstNodeVisitor
-* Child/AdultVisitor with AstDumper
-* Store with AstNode
-* BookStore with ProgramNode
+* `StoreVisitorBase` with `AstNodeVisitor`
+* `Child/AdultVisitor` with `AstDumper`
+* `Store` with `AstNode`
+* `BookStore` with `ProgramNode`
 
 will do the trick.
 
@@ -29,7 +29,7 @@ Then, implement the nodes required in `guideline.md` one by one. The instruction
 When there exist a component consisting of _zero or more something_, I declared it as a pointer to vector, and use `empty()` to check if it's empty. Similary, when there exist a component consisting of _zero or **one** something_, I declared it as a pointer to node, and check if it's `null` in `visitChildNode`. 
 For example, a `FunctionNode` consists of zero or one
 `CompoundStatementNode` and zero or more `DeclNode`, so it is implemented as:
-```cpp=
+```c++
 // in function.hpp:
 std::vector<DeclarationNode*> *decls;
 CompoundStatementNode *compound;
@@ -46,7 +46,7 @@ void FunctionNode::visitChildNodes(AstNodeVisitor &p_visitor) {
 
 ### Scalar Type
 I use an [enum class](https://openhome.cc/Gossip/CppGossip/enumType.html) to define the return types:
-```cpp=
+```c++
 // in scalar.h
 enum class Scalar {
     BOOLEAN_SC, INTEGER_SC, REAL_SC, STRING_SC, VOID_SC
@@ -54,7 +54,7 @@ enum class Scalar {
 ```
 I added the suffix `_SC` for each type to avoid confuction with terminals coming from scanner in `parser.y`.
 When I need to print out its type, I use `switch case` to control it. For example:
-```cpp=
+```c++
 const char *FunctionNode::getTypeCString() const { 
     std::string str_type;
     switch(return_type) {
@@ -80,7 +80,7 @@ Besides, I forgot to use the `ifndef`-`define`-`endif` at first and it caused re
 
 ### ConstantValueNode
 Since the value could be `int`, `double`, or `string` (and `boolean`, which I deal with it as if it were string), I took advantage of `overloading` in C++ to cope with it. Also, I set up another variable `type` to record whether it's `int`, `double`, or `string`.
-```cpp=
+```c++
 ConstantValueNode(const uint32_t line, const uint32_t col,
                   const uint32_t const_val_int);
 ConstantValueNode(const uint32_t line, const uint32_t col,
@@ -94,14 +94,14 @@ Nodes classified as _Statements_ include _Compound statement node, Assignment no
 ### ExpressionNode
 As stated in the instruction, inheritance in C++ allows us to treat a pointer to `ConstantValueNode`, `BinaryOperatorNode`
 `UnaryOperatorNode`, `ConstantValueNode`, `VariableReferenceNode`, and `FunctionNode` as a pointer to `ExpressionNode`.
-```cpp=
+```c++
 // in function.hpp
 class FunctionNode : public AstNode { /*...*/ }
 ```
 
 ### Operators
 As for operators, I declared another `enum class` to deal with it:
-```cpp=
+```c++
 // in operator.hpp
 enum class Operator {
 	UNARY_MINUS,
@@ -112,7 +112,7 @@ enum class Operator {
 };
 ```
 In this way, I can easily assign its given value from `parser.y` :
-```cpp=
+```lex
 // in parser.y
 Expression:
     L_PARENTHESIS Expression R_PARENTHESIS { $$ = $2; } 
@@ -127,7 +127,7 @@ Expression:
     /* ... */
 ```
 And it can also be easily printed as given value:
-```cpp=
+```c++
 // in UnaryOperatorNode.cpp
 const char *UnaryOperatorNode::getOpCString() {
     const char *ch;
