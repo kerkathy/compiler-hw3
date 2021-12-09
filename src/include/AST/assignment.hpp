@@ -3,12 +3,16 @@
 
 #include "AST/ast.hpp"
 #include "AST/AstDumper.hpp"
+#include "AST/expression.hpp"
+#include "AST/VariableReference.hpp"
 #include "visitor/AstNodeVisitor.hpp"                                 
 
 
 class AssignmentNode : public AstNode {
   public:
-    AssignmentNode(const uint32_t line, const uint32_t col
+    AssignmentNode(const uint32_t line, const uint32_t col,
+				   VariableReferenceNode *lval,
+				   ExpressionNode *expr
                    /* TODO: variable reference, expression */);
     ~AssignmentNode() = default;
 
@@ -18,6 +22,8 @@ class AssignmentNode : public AstNode {
 
   private:
     // TODO: variable reference, expression
+	VariableReferenceNode *lval;
+	ExpressionNode *expr;
 };
 
 #endif

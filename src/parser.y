@@ -75,6 +75,7 @@ extern int yylex_destroy(void);
 	class FunctionNode;
 	class ExpressionNode;
 	class FunctionInvocationNode;
+	class VariableReferenceNode;
 	enum class Scalar;
 	enum class Operator;
 }
@@ -94,6 +95,7 @@ extern int yylex_destroy(void);
 	FunctionNode *func_node;
 	ExpressionNode *expr_node;
 	FunctionInvocationNode *func_inv_node;
+	VariableReferenceNode *var_ref_node;
 	std::vector<int> *arr_dim_list;
 	std::vector<IdNode*> *id_list;
 	std::vector<AstNode*> *node_list;
@@ -121,9 +123,10 @@ extern int yylex_destroy(void);
 %type <func_node> Function FunctionDeclaration FunctionDefinition
 %type <expr_node> Expression
 %type <func_inv_node> FunctionInvocation
+%type <var_ref_node> VariableReference
 %type <node_list> Statements StatementList
 %type <decl_node_list> DeclarationList Declarations FormalArgs FormalArgList
-%type <expr_node_list> ExpressionList Expressions
+%type <expr_node_list> ExpressionList Expressions ArrRefs ArrRefList 
 %type <func_node_list> FunctionList Functions
 /* Follow the order in scanner.l */
 
@@ -481,29 +484,41 @@ CompoundStatement:
 ;
 
 Simple:
-    VariableReference ASSIGN Expression SEMICOLON
+    VariableReference ASSIGN Expression SEMICOLON {
+		$$ = new AssignmentNode(@2.first_line, @2.first_column, $1, $3);
+	}
     |
     PRINT Expression SEMICOLON {
 		$$ = new PrintNode(@1.first_line, @1.first_column, $2);
 	}
     |
-    READ VariableReference SEMICOLON
+    READ VariableReference SEMICOLON {
+		$$ = new ReadNode(@1.first_line, @1.first_column, $2);
+	}
 ;
 
 VariableReference:
-    ID ArrRefList
+    ID ArrRefList { $$ = new VariableReferenceNode(@1.first_line, @1.first_column, $1, $2); }
 ;
 
 ArrRefList:
-    Epsilon
+    Epsilon { $$ = new std::vector<ExpressionNode*>; }	
     |
-    ArrRefs
+    ArrRefs { $$ = $1; }
 ;
 
 ArrRefs:
-    L_BRACKET Expression R_BRACKET
+    L_BRACKET Expression R_BRACKET {
+		std::vector<ExpressionNode*> *arr_dim = new std::vector<ExpressionNode*>;
+		arr_dim->push_back($2);
+		$$ = arr_dim;
+	
+	}	
     |
-    ArrRefs L_BRACKET Expression R_BRACKET
+    ArrRefs L_BRACKET Expression R_BRACKET {
+		$1->push_back($3);
+		$$ = $1;	
+	}	
 ;
 
 Condition:
@@ -542,7 +557,6 @@ FunctionCall:
 
 FunctionInvocation:
     ID L_PARENTHESIS ExpressionList R_PARENTHESIS {
-		/*TODO: decl this node as class */
 		$$ = new FunctionInvocationNode(@1.first_line, @1.first_column, $1, $3);
 	}
 ;
