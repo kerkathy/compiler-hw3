@@ -132,7 +132,7 @@ void AstDumper::visit(BinaryOperatorNode &p_bin_op) {
     // TODO: operator string
     std::printf("binary operator <line: %u, col: %u> %s\n",
                 p_bin_op.getLocation().line, p_bin_op.getLocation().col,
-                "TODO");
+                p_bin_op.getOpCString() );
 
     incrementIndentation();
     p_bin_op.visitChildNodes(*this);
@@ -145,7 +145,7 @@ void AstDumper::visit(UnaryOperatorNode &p_un_op) {
     // TODO: operator string
     std::printf("unary operator <line: %u, col: %u> %s\n",
                 p_un_op.getLocation().line, p_un_op.getLocation().col,
-                "TODO");
+                p_un_op.getOpCString() );
 
     incrementIndentation();
     p_un_op.visitChildNodes(*this);
@@ -159,7 +159,7 @@ void AstDumper::visit(FunctionInvocationNode &p_func_invocation) {
     std::printf("function invocation <line: %u, col: %u> %s\n",
                 p_func_invocation.getLocation().line,
                 p_func_invocation.getLocation().col,
-                "TODO");
+				p_func_invocation.getNameCString());
 
     incrementIndentation();
     p_func_invocation.visitChildNodes(*this);

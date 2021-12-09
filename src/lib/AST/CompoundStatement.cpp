@@ -4,12 +4,69 @@
 CompoundStatementNode::CompoundStatementNode(const uint32_t line,
                                              const uint32_t col,
 											 std::vector<DeclNode*> *decls,
+											 std::vector<AstNode*> *statements)
+    : AstNode{line, col}, decls{decls}, statements{statements} {}
+/*
+CompoundStatementNode::CompoundStatementNode(const uint32_t line,
+                                             const uint32_t col,
+											 std::vector<DeclNode*> *decls,
 											 std::vector<CompoundStatementNode*> *statements)
-    : AstNode{line, col} {
-		this->decls = decls;
-		this->statements = statements;
-//		printf("Created CompStmtNode with stmt len %d\n", statements->size());
-	}
+    : AstNode{line, col}, decls{decls}, statements{statements} {}
+
+CompoundStatementNode::CompoundStatementNode(const uint32_t line,
+                                             const uint32_t col,
+											 std::vector<DeclNode*> *decls,
+											 std::vector<AssignmentNode*> *statements)
+    : AstNode{line, col}, decls{decls}, statements{statements} {}
+
+CompoundStatementNode::CompoundStatementNode(const uint32_t line,
+                                             const uint32_t col,
+											 std::vector<DeclNode*> *decls,
+											 std::vector<PrintNode*> *statements)
+    : AstNode{line, col}, decls{decls}, statements{statements} {}
+
+
+CompoundStatementNode::CompoundStatementNode(const uint32_t line,
+                                             const uint32_t col,
+											 std::vector<DeclNode*> *decls,
+											 std::vector<ReadNode*> *statements)
+    : AstNode{line, col}, decls{decls}, statements{statements} {}
+
+
+CompoundStatementNode::CompoundStatementNode(const uint32_t line,
+                                             const uint32_t col,
+											 std::vector<DeclNode*> *decls,
+											 std::vector<IfNode*> *statements)
+    : AstNode{line, col}, decls{decls}, statements{statements} {}
+
+
+CompoundStatementNode::CompoundStatementNode(const uint32_t line,
+                                             const uint32_t col,
+											 std::vector<DeclNode*> *decls,
+											 std::vector<WhileNode*> *statements)
+    : AstNode{line, col}, decls{decls}, statements{statements} {}
+
+
+CompoundStatementNode::CompoundStatementNode(const uint32_t line,
+                                             const uint32_t col,
+											 std::vector<DeclNode*> *decls,
+											 std::vector<ForNode*> *statements)
+    : AstNode{line, col}, decls{decls}, statements{statements} {}
+
+
+CompoundStatementNode::CompoundStatementNode(const uint32_t line,
+                                             const uint32_t col,
+											 std::vector<DeclNode*> *decls,
+											 std::vector<ReturnNode*> *statements)
+    : AstNode{line, col}, decls{decls}, statements{statements} {}
+
+
+CompoundStatementNode::CompoundStatementNode(const uint32_t line,
+                                             const uint32_t col,
+											 std::vector<DeclNode*> *decls,
+											 std::vector<FunctionNode*> *statements)
+    : AstNode{line, col}, decls{decls}, statements{statements} {}
+*/
 
 // TODO: You may use code snippets in AstDumper.cpp
 void CompoundStatementNode::print() {}

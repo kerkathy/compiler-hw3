@@ -24,6 +24,7 @@
 #include "AST/IdNode.hpp"
 #include "AST/type.hpp"
 #include "AST/scalar.h"
+#include "AST/operator.hpp"
 	
 #include <cassert>
 #include <errno.h>
@@ -66,14 +67,16 @@ extern int yylex_destroy(void);
 	class ProgramNode;
 	class DeclNode;
 	class VariableNode;
-	class FunctionNode;
 	class CompoundStatementNode;
 	class ConstantValueNode;
 	class IdNode;
 	class VarType;
 	class LiteralConstantNode;
 	class FunctionNode;
+	class ExpressionNode;
+	class FunctionInvocationNode;
 	enum class Scalar;
+	enum class Operator;
 }
 
     /* For yylval */
@@ -81,39 +84,46 @@ extern int yylex_destroy(void);
     /* basic semantic value */
  	int value;
 	double dval;
- 	char *identifier, *text;
+ 	const char *identifier, *text;
 	bool bool_type;
     AstNode *node;
 	ProgramNode *program_node;
 	DeclNode *decl_node;
 	LiteralConstantNode *literal_constant;
 	CompoundStatementNode *comp_node;
-	FunctionNode *function_node;
+	FunctionNode *func_node;
+	ExpressionNode *expr_node;
+	FunctionInvocationNode *func_inv_node;
 	std::vector<int> *arr_dim_list;
 	std::vector<IdNode*> *id_list;
 	std::vector<AstNode*> *node_list;
 	std::vector<DeclNode*> *decl_node_list;
 	std::vector<CompoundStatementNode*> *comp_node_list;
 	std::vector<FunctionNode*> *func_node_list;
+	std::vector<ExpressionNode*> *expr_node_list;
 	// ConstantValueNode *literal_constant; 
 	VarType *var_type;
 	Scalar scalar_type;
 };
 
 %type <identifier> ProgramName FunctionName 
-%type <text> StringAndBoolean
+%type <text> IntegerAndReal StringAndBoolean
 %type <bool_type> NegOrNot
 %type <var_type> Type ArrType 
 %type <scalar_type> ScalarType ReturnType
 %type <literal_constant> LiteralConstant
-%type <function_node> Function FunctionDeclaration FunctionDefinition
 %type <arr_dim_list> ArrDecl
 %type <id_list> IdList
 %type <decl_node> Declaration FormalArg
-%type <comp_node> Simple Condition While For Return FunctionCall
-%type <comp_node> Statement CompoundStatement 
+%type <node> Simple Condition While For Return FunctionCall
+%type <node> Statement  
+%type <comp_node> CompoundStatement 
+%type <func_node> Function FunctionDeclaration FunctionDefinition
+%type <expr_node> Expression
+%type <func_inv_node> FunctionInvocation
+%type <node_list> Statements StatementList
 %type <decl_node_list> DeclarationList Declarations FormalArgs FormalArgList
-%type <comp_node_list> Statements StatementList
+%type <expr_node_list> ExpressionList Expressions
 %type <func_node_list> FunctionList Functions
 /* Follow the order in scanner.l */
 
@@ -217,7 +227,6 @@ Functions:
 		std::vector<FunctionNode*> *function = $1;
 		function->push_back($2);
 		$$ = $1;
-	
 	}
 ;
 
@@ -287,7 +296,6 @@ IdList:
 	}
     |
     IdList COMMA ID {
-		// TODO: record the location of id
 		std::vector<IdNode*> *ids = $1;
 		IdNode *new_id = new IdNode(@3.first_line, @3.first_column, $3);  
 		ids->push_back(new_id);
@@ -370,8 +378,6 @@ LiteralConstant:
 		// literalconstantnode: type / constantnode
 		VarType *lit_type = new VarType(Scalar::INTEGER_SC);
 		ConstantValueNode *const_node; 
-		//uint32_t val = $1 ? -$2: $2;
-		//const_node = new ConstantValueNode(@2.first_line, @2.first_column, val);
 		if($1) {
 			// negative
 			const_node = new ConstantValueNode(@2.first_line, @2.first_column-1, uint32_t(-$2));
@@ -387,8 +393,6 @@ LiteralConstant:
     NegOrNot REAL_LITERAL {
 		VarType *lit_type = new VarType(Scalar::REAL_SC);
 		ConstantValueNode *const_node; 
-		//double d_val = $1 ? -$2 : $2;
-		//const_node = new ConstantValueNode(@2.first_line, @2.first_column, d_val);
 		if ($1) {
 			const_node = new ConstantValueNode(@2.first_line, @2.first_column - 1, double(-$2));
 		} else {
@@ -400,7 +404,6 @@ LiteralConstant:
     |
     StringAndBoolean {
 		VarType *lit_type;
-		//if ($1 == "true" || $1 == "false") 
 		if (!strcmp($1, "true") || !strcmp($1, "false")) 
 			lit_type = new VarType(Scalar::BOOLEAN_SC);
 		else 
@@ -426,9 +429,9 @@ StringAndBoolean:
 ;
 
 IntegerAndReal:
-    INT_LITERAL
-    |
-    REAL_LITERAL
+    INT_LITERAL { $$ = std::to_string($1).c_str(); }
+	|
+    REAL_LITERAL { $$ = std::to_string($1).c_str(); }
 ;
 
     /*
@@ -480,7 +483,9 @@ CompoundStatement:
 Simple:
     VariableReference ASSIGN Expression SEMICOLON
     |
-    PRINT Expression SEMICOLON
+    PRINT Expression SEMICOLON {
+		$$ = new PrintNode(@1.first_line, @1.first_column, $2);
+	}
     |
     READ VariableReference SEMICOLON
 ;
@@ -536,26 +541,35 @@ FunctionCall:
 ;
 
 FunctionInvocation:
-    ID L_PARENTHESIS ExpressionList R_PARENTHESIS
+    ID L_PARENTHESIS ExpressionList R_PARENTHESIS {
+		/*TODO: decl this node as class */
+		$$ = new FunctionInvocationNode(@1.first_line, @1.first_column, $1, $3);
+	}
 ;
 
 ExpressionList:
-    Epsilon
+    Epsilon { $$ = new std::vector<ExpressionNode*>; }
     |
-    Expressions
+    Expressions { $$ = $1; }
 ;
 
 Expressions:
-    Expression
+    Expression {
+		$$ = new std::vector<ExpressionNode*>;
+		$$->push_back($1);
+	}
     |
-    Expressions COMMA Expression
+    Expressions COMMA Expression {
+		$1->push_back($3);
+		$$ = $1;
+	}
 ;
 
 StatementList:
     Epsilon {
 		// for debug
 		//printf("found epsilon statementlist\n");
-		$$ = new std::vector<CompoundStatementNode*>;
+		$$ = new std::vector<AstNode*>;
         $$->clear();
 	}
     |
@@ -566,55 +580,89 @@ StatementList:
 
 Statements:
     Statement {
-		std::vector<CompoundStatementNode*> *statements = new std::vector<CompoundStatementNode*>;
+		std::vector<AstNode*> *statements = new std::vector<AstNode*>;
 		statements->push_back($1);
 		$$ = statements;
 	}
     |
     Statements Statement {
-		std::vector<CompoundStatementNode*> *statements = $1;
+		std::vector<AstNode*> *statements = $1;
 		statements->push_back($2);
 		$$ = $1;
 	}
 ;
 
 Expression:
-    L_PARENTHESIS Expression R_PARENTHESIS
+    L_PARENTHESIS Expression R_PARENTHESIS { $$ = $2; } 
+	|
+    MINUS Expression %prec UNARY_MINUS { 
+		$$ = new UnaryOperatorNode(@1.first_line, @1.first_column, Operator::UNARY_MINUS, $2);
+	}
+	|
+    Expression MULTIPLY Expression { 
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::MULTIPLY, $1, $3);
+   	}
     |
-    MINUS Expression %prec UNARY_MINUS
+    Expression DIVIDE Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::DIVIDE, $1, $3);
+	}
     |
-    Expression MULTIPLY Expression
+    Expression MOD Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::MOD, $1, $3);
+	}
     |
-    Expression DIVIDE Expression
+    Expression PLUS Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::PLUS, $1, $3);
+	}
     |
-    Expression MOD Expression
+    Expression MINUS Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::MINUS, $1, $3);
+	}
     |
-    Expression PLUS Expression
+    Expression LESS Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::LESS, $1, $3);
+	}
     |
-    Expression MINUS Expression
+    Expression LESS_OR_EQUAL Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::LESS_OR_EQUAL, $1, $3);
+	}
     |
-    Expression LESS Expression
+    Expression GREATER Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::GREATER, $1, $3);
+	}
     |
-    Expression LESS_OR_EQUAL Expression
+    Expression GREATER_OR_EQUAL Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::GREATER_OR_EQUAL, $1, $3);
+	}
     |
-    Expression GREATER Expression
+    Expression EQUAL Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::EQUAL, $1, $3);
+	}
     |
-    Expression GREATER_OR_EQUAL Expression
+    Expression NOT_EQUAL Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::NOT_EQUAL, $1, $3);
+	}
     |
-    Expression EQUAL Expression
+    NOT Expression {
+		$$ = new UnaryOperatorNode(@1.first_line, @1.first_column, Operator::NOT, $2);
+	}
     |
-    Expression NOT_EQUAL Expression
+    Expression AND Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::AND, $1, $3);
+	}
     |
-    NOT Expression
+    Expression OR Expression {
+		$$ = new BinaryOperatorNode(@2.first_line, @2.first_column, Operator::OR, $1, $3);
+	}
     |
-    Expression AND Expression
-    |
-    Expression OR Expression
-    |
-    IntegerAndReal
-    |
-    StringAndBoolean
-    |
+    IntegerAndReal {
+		$$ = new ConstantValueNode(@1.first_line, @1.first_column, $1);
+	}
+	|
+    StringAndBoolean {
+		$$ = new ConstantValueNode(@1.first_line, @1.first_column, $1);
+	}
+	|
     VariableReference
     |
     FunctionInvocation

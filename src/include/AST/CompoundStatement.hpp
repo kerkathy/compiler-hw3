@@ -13,9 +13,44 @@ class CompoundStatementNode : public AstNode {
   public:
     CompoundStatementNode(const uint32_t line, const uint32_t col,
 						  std::vector<DeclNode*> *decls, 
+						  std::vector<AstNode*> *statements); 
+/*
+    CompoundStatementNode(const uint32_t line, const uint32_t col,
+						  std::vector<DeclNode*> *decls, 
 						  std::vector<CompoundStatementNode*> *statements); 
-						  //std::vector<AstNode*> *statements); 
 
+    CompoundStatementNode(const uint32_t line, const uint32_t col,
+						  std::vector<DeclNode*> *decls, 
+						  std::vector<AssignmentNode*> *statements);        
+
+    CompoundStatementNode(const uint32_t line, const uint32_t col,
+						  std::vector<DeclNode*> *decls, 
+						  std::vector<PrintNode*> *statements); 
+
+    CompoundStatementNode(const uint32_t line, const uint32_t col,
+						  std::vector<DeclNode*> *decls, 
+						  std::vector<ReadNode*> *statements); 
+
+    CompoundStatementNode(const uint32_t line, const uint32_t col,
+						  std::vector<DeclNode*> *decls, 
+						  std::vector<IfNode*> *statements); 
+
+    CompoundStatementNode(const uint32_t line, const uint32_t col,
+						  std::vector<DeclNode*> *decls, 
+						  std::vector<WhileNode*> *statements); 
+
+    CompoundStatementNode(const uint32_t line, const uint32_t col,
+						  std::vector<DeclNode*> *decls, 
+						  std::vector<ForNode*> *statements); 
+
+    CompoundStatementNode(const uint32_t line, const uint32_t col,
+						  std::vector<DeclNode*> *decls, 
+						  std::vector<ReturnNode*> *statements); 
+
+    CompoundStatementNode(const uint32_t line, const uint32_t col,
+						  std::vector<DeclNode*> *decls, 
+						  std::vector<FunctionNode*> *statements); 
+*/	
                           /* TODO: declarations, statements );*/
     ~CompoundStatementNode() = default;
 
@@ -25,7 +60,7 @@ class CompoundStatementNode : public AstNode {
 
   private:
 	std::vector<DeclNode*> *decls;
-	std::vector<CompoundStatementNode*> *statements;
+	std::vector<AstNode*> *statements;
 	// TODO: declarations, statements
 };
 

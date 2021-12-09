@@ -3,11 +3,13 @@
 
 #include "AST/ast.hpp"
 #include "AST/AstDumper.hpp" 
+#include "AST/expression.hpp" 
 #include "visitor/AstNodeVisitor.hpp"
 
 class PrintNode : public AstNode {
   public:
-    PrintNode(const uint32_t line, const uint32_t col
+    PrintNode(const uint32_t line, const uint32_t col,
+			  ExpressionNode *target
               /* TODO: expression */);
     ~PrintNode() = default;
 
@@ -16,6 +18,7 @@ class PrintNode : public AstNode {
     void visitChildNodes(AstNodeVisitor &p_visitor);
 
   private:
+	ExpressionNode *target;
     // TODO: expression
 };
 
