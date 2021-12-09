@@ -4,7 +4,6 @@
 #include "AST/ast.hpp"
 #include "AST/ConstantValue.hpp"
 #include "visitor/AstNodeVisitor.hpp"
-#include "AST/AstDumper.hpp" 
 #include "AST/type.hpp" 
 
 #include <string>

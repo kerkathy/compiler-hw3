@@ -2,7 +2,6 @@
 #define __AST_EXPRESSION_NODE_H
 
 #include "AST/ast.hpp"
-#include "AST/AstDumper.hpp" 
 #include "visitor/AstNodeVisitor.hpp"
 
 class ExpressionNode : public AstNode {

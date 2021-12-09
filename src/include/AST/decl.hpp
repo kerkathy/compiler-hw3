@@ -6,7 +6,6 @@
 #include <cstdio>
 
 #include "AST/ast.hpp"
-#include "AST/AstDumper.hpp"  
 #include "AST/variable.hpp"
 #include "AST/ConstantValue.hpp"
 #include "AST/IdNode.hpp"

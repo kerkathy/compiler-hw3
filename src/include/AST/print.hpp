@@ -2,7 +2,6 @@
 #define __AST_PRINT_NODE_H
 
 #include "AST/ast.hpp"
-#include "AST/AstDumper.hpp" 
 #include "AST/expression.hpp" 
 #include "visitor/AstNodeVisitor.hpp"
 

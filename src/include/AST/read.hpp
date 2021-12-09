@@ -3,7 +3,6 @@
 
 #include "AST/ast.hpp"
 #include "visitor/AstNodeVisitor.hpp"                                 
-#include "AST/AstDumper.hpp"  
 #include "AST/VariableReference.hpp"  
 
 class ReadNode : public AstNode {

@@ -5,7 +5,6 @@
 #include "AST/decl.hpp"
 #include "AST/CompoundStatement.hpp"
 #include "visitor/AstNodeVisitor.hpp"
-#include "AST/AstDumper.hpp" 
 #include "AST/scalar.h"
 
 class FunctionNode : public AstNode {

@@ -2,7 +2,6 @@
 #define __AST_BINARY_OPERATOR_NODE_H
 
 #include "AST/expression.hpp"
-#include "AST/AstDumper.hpp" 
 #include "AST/operator.hpp" 
 #include "visitor/AstNodeVisitor.hpp"
 

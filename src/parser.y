@@ -103,7 +103,6 @@ extern int yylex_destroy(void);
 	std::vector<CompoundStatementNode*> *comp_node_list;
 	std::vector<FunctionNode*> *func_node_list;
 	std::vector<ExpressionNode*> *expr_node_list;
-	// ConstantValueNode *literal_constant; 
 	VarType *var_type;
 	Scalar scalar_type;
 };
@@ -170,8 +169,6 @@ Program:
     DeclarationList FunctionList CompoundStatement
     /* End of ProgramBody */
     END {
-		//debug
-		//printf("Program\n");
         root = new ProgramNode(@1.first_line, @1.first_column,
                                $1, "void", $3, $4, $5);
     }
@@ -185,20 +182,15 @@ DeclarationList:
     Epsilon {
 		$$ = new std::vector<DeclNode*>;
 		$$->clear();
-		//printf("decl list size %d\n", $$->size());
 	}
 	|
     Declarations {
-		//debug
-		//printf("DeclarationList\n");
         $$ = $1;
 	}
 ;
 
 Declarations:
     Declaration {
-		//debug
-		//printf("Declarations\n");
         std::vector<DeclNode*> *decl = new std::vector<DeclNode*>;
 		decl->push_back($1);
 		$$ = decl;
@@ -317,8 +309,6 @@ ReturnType:
                                    */
 Declaration:
     VAR IdList COLON Type SEMICOLON {
-		//debug
-		//printf("Declaration\n");
         $$ = new DeclNode(@1.first_line, @1.first_column,
                                    $2, $4);
 	}
@@ -331,8 +321,6 @@ Declaration:
 
 Type:
     ScalarType {
-		//debug
-		//printf("Type\n");
         VarType *sc_type = new VarType($1);
 		$$ = sc_type;
 	}
@@ -343,10 +331,7 @@ Type:
 ;
 
 ScalarType:
-    INTEGER { 
-		//debug
-		//printf("ScalarType\n");
-        $$ = Scalar::INTEGER_SC; }
+    INTEGER { $$ = Scalar::INTEGER_SC; }
     |
     REAL { $$ = Scalar::REAL_SC; }
     |
@@ -442,34 +427,19 @@ IntegerAndReal:
                   */
 
 Statement:
-    CompoundStatement {
-		//printf("find Statement!\n");
-		$$ = $1;
-	}
+    CompoundStatement {	$$ = $1; }
     |
-    Simple {
-		$$ = $1;
-	}
+    Simple { $$ = $1; }
     |
-    Condition  {
-		$$ = $1;
-	}
+    Condition  { $$ = $1; }
     |
-    While {
-		$$ = $1;
-	}
+    While { $$ = $1; }
     |
-    For {
-		$$ = $1;
-	}
+    For { $$ = $1; }
     |
-    Return {
-		$$ = $1;
-	}
+    Return { $$ = $1; }
     |
-    FunctionCall {
-		$$ = $1;
-	}
+    FunctionCall { $$ = $1; }
 ;
 
 CompoundStatement:
@@ -477,8 +447,6 @@ CompoundStatement:
     DeclarationList
     StatementList
     END {
-		// for debug
-		//printf("found compoundstatement! \n");
 		$$ = new CompoundStatementNode(@1.first_line, @1.first_column, $2, $3);
 	}
 ;
@@ -600,8 +568,6 @@ Expressions:
 
 StatementList:
     Epsilon {
-		// for debug
-		//printf("found epsilon statementlist\n");
 		$$ = new std::vector<AstNode*>;
         $$->clear();
 	}
@@ -739,8 +705,6 @@ int main(int argc, const char *argv[]) {
     if (argc >= 3 && strcmp(argv[2], "--dump-ast") == 0) {
         // root->print();
         AstDumper astdump;
-		//debug
-		//printf("About to accept\n");
 		root->accept(astdump);
     }
 

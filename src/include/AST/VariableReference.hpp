@@ -2,7 +2,6 @@
 #define __AST_VARIABLE_REFERENCE_NODE_H
 
 #include "AST/expression.hpp"
-#include "AST/AstDumper.hpp"  
 #include "visitor/AstNodeVisitor.hpp"                                 
 
 #include <vector>

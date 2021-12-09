@@ -48,12 +48,6 @@ const std::vector<std::string> FunctionNode::getProtoCString() const {
 		std::vector<std::string> decl_cstr = decl->getAllTypeCString();
 		proto_cstr.insert(proto_cstr.end(), decl_cstr.begin(), decl_cstr.end());
 	}
-	//std::printf("in function.cpp\n");
-
-//	for (auto &str :proto_cstr) {
-//		std::printf("%s ", str);
-//	}
-//	std::printf("\n");
 	return proto_cstr;
 }
 
@@ -62,7 +56,6 @@ const std::vector<std::string> FunctionNode::getProtoCString() const {
 void FunctionNode::print() {}
 
 void FunctionNode::visitChildNodes(AstNodeVisitor &p_visitor) {
-    // TODO
 	if (!decls->empty()) {
 		for (auto &decl : *decls) {
 			decl->accept(p_visitor);

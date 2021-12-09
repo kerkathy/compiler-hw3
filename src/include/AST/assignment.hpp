@@ -2,7 +2,6 @@
 #define __AST_ASSIGNMENT_NODE_H
 
 #include "AST/ast.hpp"
-#include "AST/AstDumper.hpp"
 #include "AST/expression.hpp"
 #include "AST/VariableReference.hpp"
 #include "visitor/AstNodeVisitor.hpp"                                 
